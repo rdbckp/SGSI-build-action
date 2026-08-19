@@ -13,14 +13,19 @@ on:
         default: 'gsi'
         type: string
       os_type:
-        description: 'OS type'
+        description: 'OS type (AOSP Android 11 arm32 target)'
         required: true
         default: 'AOSP'
         type: string
       version:
         description: 'Android version'
         required: true
-        default: '12'
+        default: '11'
+        type: string
+      architecture:
+        description: 'Target architecture'
+        required: true
+        default: 'arm'
         type: string
       repack_name:
         description: 'Output zip name'
@@ -28,12 +33,17 @@ on:
         default: 'SGSI.zip'
         type: string
 
+env:
+  ANDROID_VERSION: 11
+  TARGET_ARCH: arm
+  TARGET_CPU: armv7-a
+
 permissions:
   contents: write
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout
@@ -53,6 +63,7 @@ jobs:
             echo "build_type=${{ github.event.inputs.build_type }}"
             echo "os_type=${{ github.event.inputs.os_type }}"
             echo "version=${{ github.event.inputs.version }}"
+            echo "architecture=${{ github.event.inputs.architecture }}"
             echo "repack_name=${{ github.event.inputs.repack_name }}"
           } >> "$GITHUB_ENV"
 
@@ -80,7 +91,7 @@ jobs:
 
       - name: Initializing Environment
         run: |
-          sudo apt-get install -y git wget git zip unzip curl axel
+          sudo apt-get install -y git wget zip unzip curl aria2
 
       - name: Cloning SGSI source code
         run: |
