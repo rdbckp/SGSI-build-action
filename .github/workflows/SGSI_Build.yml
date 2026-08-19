@@ -68,6 +68,7 @@ jobs:
           required "${{ env.repack_name || steps.config.outputs.repack_name }}" "REPACK_NAME config"
 
       - name: Cleanup workspace
+        continue-on-error: true
         run: |
           docker rmi `docker images -q`
           sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d
@@ -118,4 +119,3 @@ jobs:
           tag: "${{ env.os_type || steps.config.outputs.os_type }}${{ env.build_type || steps.config.outputs.build_type }}-${{ env.version || steps.config.outputs.version }}-${{ github.run_number }}"
           bodyFile: "${{ github.workspace}}/SGSI-build-tool/SGSI/build_info.txt"
           token: ${{ secrets.GITHUB_TOKEN }}
-          
